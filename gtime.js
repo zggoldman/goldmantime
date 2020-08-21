@@ -34,9 +34,9 @@ const MONTHS = [
 function replaceCurrentTime() {
   const si_ms_since_epoch = new Date().getTime();
 
-  document.getElementsByTagName(
-    'body'
-  )[0].innerHTML = `<p class="current-date">${dateString(
+  document.getElementById(
+    'date-and-time-container'
+  ).innerHTML = `<p class="current-date">${dateString(
     si_ms_since_epoch
   )}</p><p class="current-time">${timeString(si_ms_since_epoch)}</p>`;
 }
@@ -83,18 +83,53 @@ function weekday() {
   day % 6;
 }
 
-function hour() {
-  ((si_ms_since_epoch % SI_MS_IN_DAY) / SI_MS_IN_HOUR).floor;
+function hour(si_ms_since_epoch) {
+  return Math.floor((si_ms_since_epoch % SI_MS_IN_DAY) / SI_MS_IN_HOUR);
 }
 
-function minute() {
-  ((si_ms_since_epoch % SI_MS_IN_HOUR) / SI_MS_IN_MINUTE).floor;
+function minute(si_ms_since_epoch) {
+  return Math.floor((si_ms_since_epoch % SI_MS_IN_HOUR) / SI_MS_IN_MINUTE);
 }
 
-function second() {
-  ((si_ms_since_epoch % SI_MS_IN_MINUTE) / SI_MS_IN_SECOND).floor;
+function second(si_ms_since_epoch) {
+  return Math.floor((si_ms_since_epoch % SI_MS_IN_MINUTE) / SI_MS_IN_SECOND);
 }
 
 function pad(number) {
   return number.toString().padStart(2, '0');
+}
+
+function initClocks() {
+  const si_ms_since_epoch = new Date().getTime();
+
+  // Create an object with each hand and it's angle in degrees
+  var hands = [
+    {
+      hand: 'hours',
+      angle: hour(si_ms_since_epoch) * 30 + minute(si_ms_since_epoch) / 2,
+    },
+    {
+      hand: 'minutes',
+      angle: minute(si_ms_since_epoch) * 6,
+    },
+    {
+      hand: 'seconds',
+      angle: second(si_ms_since_epoch) * 6,
+    },
+  ];
+  // Loop through each of these hands to set their angle
+  for (var j = 0; j < hands.length; j++) {
+    var elements = document.querySelectorAll('.' + hands[j].hand);
+    for (var k = 0; k < elements.length; k++) {
+      elements[k].style.webkitTransform = 'rotateZ(' + hands[j].angle + 'deg)';
+      elements[k].style.transform = 'rotateZ(' + hands[j].angle + 'deg)';
+      // If this is a minute hand, note the seconds position (to calculate minute position later)
+      if (hands[j].hand === 'minutes') {
+        elements[k].parentNode.setAttribute(
+          'data-second-angle',
+          hands[j + 1].angle
+        );
+      }
+    }
+  }
 }

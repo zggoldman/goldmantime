@@ -9,6 +9,15 @@
   <script type="text/javascript" src="gtime.js"></script>
 </head>
 <body>
-  <script>setInterval(replaceCurrentTime, SI_MS_IN_SECOND); </script>
+  <nav>
+    <a class="selected" href="index.html">Local</a>
+    <a href="world.html">World</a>
+  </nav>
+  <div id="date-and-time-container">
+    <script>
+      replaceCurrentTime();
+      setInterval(replaceCurrentTime, SI_MS_IN_SECOND);
+    </script>
+  </div>
 </body>
 </html>
