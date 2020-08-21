@@ -7,7 +7,6 @@ const SI_MS_IN_SECOND = SI_MS_IN_MINUTE / 60.0;
 
 const WEEKDAYS = [
   'Sunday',
-  'Monday',
   'Tuesday',
   'Wednesday',
   'Thursday',
